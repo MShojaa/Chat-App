@@ -58,6 +58,10 @@ namespace msh {
         is_read_completed = true;
     }
 
+    std::string Flow::last_element() {
+        return this->back();
+    }
+
     /// <summary>
     /// Initializes field variable
     /// </summary>

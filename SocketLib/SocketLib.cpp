@@ -9,6 +9,7 @@ namespace msh {
         WSADATA wsaData;
         if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
             // Handle error
+            this->CloseSocket();
             return false;
         }
 
@@ -16,7 +17,7 @@ namespace msh {
         server_socket_ = socket(AF_INET, SOCK_STREAM, 0);
         if (server_socket_ == INVALID_SOCKET) {
             // Handle error
-            WSACleanup();
+            this->CloseSocket();
             return false;
         }
 
@@ -27,16 +28,14 @@ namespace msh {
         serverAddr.sin_port = htons(port);
         if (bind(server_socket_, (sockaddr*)&serverAddr, sizeof(serverAddr)) == SOCKET_ERROR) {
             // Handle error
-            closesocket(server_socket_);
-            WSACleanup();
+            this->CloseSocket();
             return false;
         }
 
         // Listen for connections
         if (listen(server_socket_, SOMAXCONN) == SOCKET_ERROR) {
             // Handle error
-            closesocket(server_socket_);
-            WSACleanup();
+            this->CloseSocket();
             return false;
         }
 
@@ -46,8 +45,7 @@ namespace msh {
         client_socket_ = accept(server_socket_, (sockaddr*)&clientAddr, &clientSize);
         if (client_socket_ == INVALID_SOCKET) {
             // Handle error
-            closesocket(server_socket_);
-            WSACleanup();
+            this->CloseSocket();
             return false;
         }
 
@@ -66,7 +64,7 @@ namespace msh {
         client_socket_ = socket(AF_INET, SOCK_STREAM, 0);
         if (client_socket_ == INVALID_SOCKET) {
             // Handle error
-            WSACleanup();
+            this->CloseSocket();
             return false;
         }
 
@@ -77,12 +75,24 @@ namespace msh {
         serverAddr.sin_port = htons(port);
         if (connect(client_socket_, (sockaddr*)&serverAddr, sizeof(serverAddr)) == SOCKET_ERROR) {
             // Handle error
-            closesocket(client_socket_);
-            WSACleanup();
+            this->CloseSocket();
             return false;
         }
 
         return true;
+    }
+
+    void SocketLib::CloseSocket() {
+        if (client_socket_ != INVALID_SOCKET) {
+            closesocket(client_socket_);
+            client_socket_ = INVALID_SOCKET;
+        }
+        if (server_socket_ != INVALID_SOCKET) {
+            closesocket(server_socket_);
+            server_socket_ = INVALID_SOCKET;
+        }
+
+        WSACleanup();
     }
 
     bool SocketLib::Send(const std::string& message) {
@@ -111,32 +121,60 @@ namespace msh {
     }
 
     std::optional<std::string> SocketLib::Receive() {
-        // Receive message
-        char buffer[1024];
-        int receiveResult = recv(client_socket_, buffer, sizeof(buffer), 0);
-        if (receiveResult >= 0) {
-            return std::string(buffer, receiveResult);
+
+        // Receives message
+        std::string buffer(1024, '\0');
+        int receiveResult = recv(client_socket_, &buffer[0], (int)buffer.length(), 0);
+        if (receiveResult > 0) {
+            return buffer.substr(0, receiveResult);
         } else {
-            // Handle error
+            // Handles error
             return std::nullopt;
         }
     }
 
     bool SocketLib::ReceiveAsync(msh::Flow& buffer) {
 
+        std::optional<std::string> received_packet = this->Receive();
+        if (!received_packet.has_value())
+            return false;
+        
+        buffer.push_async(received_packet.value());
+        return true;
+    }
+
+    std::optional<std::string> SocketLib::ReceiveUntil(const std::string& finished_message) {
+
+        std::optional<std::string> received_message;
+        std::string return_value;
+
+        while (true) {
+            received_message = this->Receive();
+            if (received_message == finished_message)
+                break;
+            return_value += received_message.value();
+        }
+
+        return return_value;
+    }
+
+    bool SocketLib::ReceiveAsyncUntil(msh::Flow& buffer, const std::string& finished_message) {
+
+        std::string return_value;
+
         bool result = false;
 
         while (true) {
-            std::optional<std::string> received_data = this->Receive();
-            if (!received_data.has_value()) {
-                break;
+            result = this->ReceiveAsync(buffer);
+            
+            if (!result) {
+                // Handles error
+                break;  // result == false
+            } else if (buffer.last_element() == finished_message) {
+                // if result == true, then buffer has some value in it
+                (void)buffer.pop_async();
+                break;  // result == true
             }
-
-            if (received_data.value().empty()) {
-                result = true;
-                break;
-            }
-            buffer.push_async(received_data.value());
         }
 
         buffer.finished();
@@ -204,6 +242,6 @@ namespace msh {
     }
 
     SocketLib::~SocketLib() {
-        WSACleanup();
+        CloseSocket();
     }
 }

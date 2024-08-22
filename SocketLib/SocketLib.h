@@ -21,6 +21,11 @@ namespace msh {
         bool Connect(const std::string& ip, const int port);
 
         /// <summary>
+        /// Closes the socket
+        /// </summary>
+        void CloseSocket();
+
+        /// <summary>
         /// Sends data through network
         /// </summary>
         /// <param name="message"> message (data) to send </param>
@@ -41,10 +46,27 @@ namespace msh {
         std::optional<std::string> Receive();
 
         /// <summary>
-        /// Receives data from 
+        /// Receives data from network
+        /// If last packet is empty, function is done
         /// </summary>
+        /// <param name="buffer"> Received data from network </param>
         /// <returns> true on success and false on failure </returns>
         bool ReceiveAsync(msh::Flow& buffer);
+
+        /// <summary>
+        /// Receives data from network until receive the finished_message
+        /// </summary>
+        /// <param name="finished_message"> Determines last packet </param>
+        /// <returns> nullptr on failure and data received on success </returns>
+        std::optional<std::string> ReceiveUntil(const std::string& finished_message);
+
+        /// <summary>
+        /// Receives data from network until receive the finished_message
+        /// </summary>
+        /// <param name="buffer"> Received data from network </param>
+        /// <param name="finished_message"> Determines last packet </param>
+        /// <returns> true on success and false on failure </returns>
+        bool ReceiveAsyncUntil(msh::Flow& buffer, const std::string& finished_message);
 
         /// <summary>
         /// Gets local IPV4 (Server)

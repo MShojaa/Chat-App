@@ -9,4 +9,6 @@
 
 // add headers that you want to pre-compile here
 
+#include "SocketLib.h"
+
 #endif //PCH_H_SOCKET_LIB_TEST

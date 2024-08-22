@@ -9,17 +9,18 @@
 * msh::Flow buffer;
 * 
 * // Creates a container to consume results
+* std::string content = "Some content";
 * std::optional<std::string> result;
 * 
 * // Writes data to buffer asynchronously
-* std::thread write_to_buffer_thread([&file_, &buffer]() {
-*     file_.ReadAsync(buffer);
-* });
+* std::thread write_to_buffer_thread([&buffer, &content]() {
+* 	buffer.push_async(content);
+* 	});
 * 
 * // Consumes data from buffer
 * std::thread read_and_pop_from_buffer_thread([&buffer, &result]() {
-*     result = buffer.pop_async();
-* });
+* result = buffer.pop_async();
+* 	});
 * 
 * // Waits for threads to join
 * write_to_buffer_thread.join();
@@ -27,7 +28,7 @@
 * 
 * // Handles error
 * if (!result.has_value())
-*     return EXIT_FAILURE;
+* 	return EXIT_FAILURE;
 */
 
 namespace msh {
@@ -53,6 +54,12 @@ namespace msh {
         /// Completed data write to the buffer and waits for data to pop-out of buffer (read data - pop_async())
         /// </summary>
         void finished();
+
+        /// <summary>
+        /// Returns the last element pushed to the queue
+        /// </summary>
+        /// <returns> the last element pushed to the queue </returns>
+        std::string last_element();
 
         /// <summary>
         /// Initializes Field is_read_completed to false
