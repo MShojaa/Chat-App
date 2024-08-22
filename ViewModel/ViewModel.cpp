@@ -12,9 +12,14 @@ namespace msh {
 		return socket_.Connect(ip, port);
 	}
 
-	bool ViewModel::SendFile(const std::string& file_name) {
+	bool ViewModel::SendFile(const std::filesystem::path& path) {
 
-		file_.Open(file_name, msh::FileMode::kRead);
+		// Checks if the file exists or not
+		if (!std::filesystem::is_regular_file(path))
+			return false;
+
+		// Opens the file and checks it could open it or not
+		file_.Open(path.string(), msh::FileMode::kRead);
 		if (!file_.IsOpen())
 			return false;
 
@@ -23,36 +28,54 @@ namespace msh {
 
 		// Reads data from file and writes them to the buffer asynchronously
 		std::thread reading_thread([this, &buffer]() {
+			// Writes the file content in to the buffer
 			file_.ReadAsync(buffer);
 		});
 
 		// Sends data through network and pops data out of buffer asynchronously
 		bool result = false;
-		std::thread sending_thread([this, &buffer, &result]() {
+		std::thread sending_thread([this, &buffer, &result, &path]() {
+			// Sends the file name
+			result = socket_.Send(path.filename().string());
+
+			// Sends content of the file
+			//std::this_thread::sleep_for(std::chrono::seconds(1));
 			result = socket_.SendAsync(buffer);
+
+			// Sends the last packet
+			//std::this_thread::sleep_for(std::chrono::seconds(1));
+			result = socket_.Send(last_packet_);
 		});
 
+		// Waits for the file to finish reading its content and closes the file
 		reading_thread.join();
 		file_.Close();
 
+		// Waits for finishing sending data
 		sending_thread.join();
 
 		return result;
 	}
 
-	bool ViewModel::ReceiveFile(const std::string& file_name) {
+	bool ViewModel::ReceiveFile() {
+		bool result = false;
 
-		file_.Open(file_name, msh::FileMode::kWrite);
+		// Receives the file name
+		auto file_name = socket_.Receive();
+		if (!file_name.has_value())
+			return result;  // false
+
+		// Opens a file to write content in it
+		file_.Open(file_name.value(), msh::FileMode::kWrite);
 		if (!file_.IsOpen())
-			return false;
+			return result;  // false
 
-		// Creates an async buffer to read and send data asynchronously
+		// Creates an async buffer to receive and write data asynchronously
 		msh::Flow buffer;
 
 		// Receives data from network and writes them to the buffer asynchronously
-		bool result = false;
 		std::thread receiving_thread([this, &buffer, &result]() {
-			result = socket_.ReceiveAsync(buffer);
+			result = socket_.ReceiveAsyncUntil(buffer, last_packet_);
 		});
 
 		// Writes data in a file and pops data out of buffer asynchronously
@@ -66,11 +89,15 @@ namespace msh {
 		return result;
 	}
 
-	bool ViewModel::SendMessage(std::string_view message) {
-		return false;
+	inline bool ViewModel::SendMessage(const std::string &message) {
+		return socket_.Send(message);
 	}
 
-	bool ViewModel::ReceiveMessage(std::string& received_message) {
-		return false;
+	inline bool ViewModel::ReceiveMessage(std::string& received_message) {
+		return socket_.Receive(received_message);
+	}
+
+	ViewModel::ViewModel(const std::string &last_packet) {
+		last_packet_ = last_packet;
 	}
 }

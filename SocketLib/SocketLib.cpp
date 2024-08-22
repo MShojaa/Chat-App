@@ -133,6 +133,21 @@ namespace msh {
         }
     }
 
+    bool SocketLib::Receive(std::string& received_message) {
+
+        // Receives message
+        received_message = std::string(1024, '\0');
+        int receiveResult = recv(client_socket_, &received_message[0], (int)received_message.length(), 0);
+        if (receiveResult > 0) {
+            received_message.resize(receiveResult);
+            //received_message = received_message.substr(0, receiveResult);
+            return true;
+        } else {
+            // Handles error
+            return false;
+        }
+    }
+
     bool SocketLib::ReceiveAsync(msh::Flow& buffer) {
 
         std::optional<std::string> received_packet = this->Receive();

@@ -46,6 +46,13 @@ namespace msh {
         std::optional<std::string> Receive();
 
         /// <summary>
+        /// Receives data from 
+        /// </summary>
+        /// <param name="received_message"> Received data from network </param>
+        /// <returns> true on success and false on failure </returns>
+        bool Receive(std::string &received_message);
+
+        /// <summary>
         /// Receives data from network
         /// If last packet is empty, function is done
         /// </summary>

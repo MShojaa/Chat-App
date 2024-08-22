@@ -24,27 +24,22 @@ namespace msh {
 		/// <summary>
 		/// Reads and sends file through network asynchronously
 		/// </summary>
-		/// <param name="file_name"> file_name on the local and sends it to the remote </param>
+		/// <param name="path"> path to the file (relative/full) on the local and sends it to the remote </param>
 		/// <returns> true on success or false on failure </returns>
-		bool SendFile(const std::string& file_name);
+		bool SendFile(const std::filesystem::path& path);
 
 		/// <summary>
 		/// Receives and writes data from network to a file asynchronously
 		/// </summary>
-		/// <param name="file_name"> file_name from remote and saves it on the local system </param>
 		/// <returns> true on success or false on failure </returns>
-		bool ReceiveFile(const std::string& file_name);
+		bool ReceiveFile();
 
-		// TODO:
-		
 		/// <summary>
 		/// Sends message to remote system
 		/// </summary>
 		/// <param name="message"> message to be sent </param>
 		/// <returns> true on success or false on failure </returns>
-		bool SendMessage(std::string_view message);
-
-		// TODO:
+		bool SendMessage(const std::string& message);
 
 		/// <summary>
 		/// Receives message from remote system
@@ -52,6 +47,12 @@ namespace msh {
 		/// <param name="received_message"> received message from remote system </param>
 		/// <returns> true on success or false on failure </returns>
 		bool ReceiveMessage(std::string &received_message);
+
+		/// <summary>
+		/// Initializes last_packet_
+		/// </summary>
+		/// <param name="last_packet"> field variable </param>
+		ViewModel(const std::string &last_packet = "$$end$$");
 
 	private:
 		/// <summary>
@@ -63,5 +64,10 @@ namespace msh {
 		/// Handles network operations (listen/connect/send/receive)
 		/// </summary>
 		SocketLib socket_;
+
+		/// <summary>
+		/// Stores last packet for sending and receiving files
+		/// </summary>
+		std::string last_packet_;
 	};
 }
