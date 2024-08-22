@@ -141,7 +141,11 @@ namespace msh {
 	}
 
 	void FileManagement::Close() {
-		CloseHandle(hFile_);
+		if (hFile_ != INVALID_HANDLE_VALUE) {
+			CloseHandle(hFile_);
+			hFile_ = INVALID_HANDLE_VALUE;
+		}
+
 	}
 
 	FileManagement::~FileManagement() {

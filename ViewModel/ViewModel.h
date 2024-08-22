@@ -22,6 +22,11 @@ namespace msh {
 		bool Connect(const std::string& ip, const int port);
 
 		/// <summary>
+		/// Closes connection (server/client)
+		/// </summary>
+		void CloseConnection();
+
+		/// <summary>
 		/// Reads and sends file through network asynchronously
 		/// </summary>
 		/// <param name="path"> path to the file (relative/full) on the local and sends it to the remote </param>

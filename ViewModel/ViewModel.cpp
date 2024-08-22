@@ -12,6 +12,10 @@ namespace msh {
 		return socket_.Connect(ip, port);
 	}
 
+	void ViewModel::CloseConnection() {
+		socket_.CloseSocket();
+	}
+
 	bool ViewModel::SendFile(const std::filesystem::path& path) {
 
 		// Checks if the file exists or not
