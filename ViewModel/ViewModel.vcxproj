@@ -78,8 +78,8 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)Flow;$(SolutionDir)FileManagement;$(SolutionDir)SocketLib</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)Flow;$(SolutionDir)FileManagement;$(SolutionDir)SocketLib;$(SolutionDir)UiEvent</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -97,8 +97,8 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)Flow;$(SolutionDir)FileManagement;$(SolutionDir)SocketLib</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)Flow;$(SolutionDir)FileManagement;$(SolutionDir)SocketLib;$(SolutionDir)UiEvent</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -116,8 +116,8 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)Flow;$(SolutionDir)FileManagement;$(SolutionDir)SocketLib</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)Flow;$(SolutionDir)FileManagement;$(SolutionDir)SocketLib;$(SolutionDir)UiEvent</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -135,8 +135,8 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)Flow;$(SolutionDir)FileManagement;$(SolutionDir)SocketLib</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(SolutionDir)Flow;$(SolutionDir)FileManagement;$(SolutionDir)SocketLib;$(SolutionDir)UiEvent</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -169,6 +169,9 @@
     </ProjectReference>
     <ProjectReference Include="..\SocketLib\SocketLib.vcxproj">
       <Project>{be438049-0aac-4aae-829f-3c3acc1f90b5}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\UiEvent\UiEvent.vcxproj">
+      <Project>{22317410-fafc-41bc-8573-3fd22fe2b8e1}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

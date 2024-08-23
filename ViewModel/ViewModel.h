@@ -3,9 +3,16 @@
 #include "pch.h"
 
 namespace msh {
+
 	class ViewModel
 	{
 	public:
+		/// <summary>
+		/// Handles UI events
+		/// </summary>
+		/// <param name="event"> events sent by UI </param>
+		void OnEvent(const UiEvent event);
+
 		/// <summary>
 		/// Listens on a port given (Server)
 		/// </summary>
@@ -44,6 +51,7 @@ namespace msh {
 		/// </summary>
 		/// <param name="message"> message to be sent </param>
 		/// <returns> true on success or false on failure </returns>
+#undef SendMessage
 		bool SendMessage(const std::string& message);
 
 		/// <summary>
@@ -51,13 +59,13 @@ namespace msh {
 		/// </summary>
 		/// <param name="received_message"> received message from remote system </param>
 		/// <returns> true on success or false on failure </returns>
-		bool ReceiveMessage(std::string &received_message);
+		bool ReceiveMessage(std::string& received_message);
 
 		/// <summary>
 		/// Initializes last_packet_
 		/// </summary>
 		/// <param name="last_packet"> field variable </param>
-		ViewModel(const std::string &last_packet = "$$end$$");
+		ViewModel(const std::string& last_packet = "$$end$$");
 
 	private:
 		/// <summary>

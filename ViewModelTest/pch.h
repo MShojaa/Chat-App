@@ -9,6 +9,9 @@
 
 // add headers that you want to pre-compile here
 
+#include <filesystem>
+#include <fstream>
+
 #include "ViewModel.h"
 
 #endif //PCH_H_VIEW_MODEL_TEST

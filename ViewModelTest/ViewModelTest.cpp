@@ -8,17 +8,35 @@ namespace ViewModelTest
 	TEST_CLASS(ViewModelTest)
 	{
 	public:
-		
-		TEST_METHOD(SendReceiveTest)
+
+		TEST_METHOD(SendReceiveFileTest)
 		{
 			OpenConnection();
 
-			std::string path = "C:\\Users\\mazia\\Desktop\\SocketLib.cpp";
+			std::filesystem::path path = "test\\test.txt";
+			std::filesystem::path directory = path;
+			std::string expected = "Hello World\nHow do you do?";
+
+			// Creates directory
+			std::filesystem::create_directory(directory.remove_filename());
+			if (!std::filesystem::exists(directory))
+				Assert::Fail((L"Failed to create the directory: " + directory.wstring()).c_str());
+
+			// Creates sample file
+			std::fstream file(path, std::ios::out);
+			if (!file.is_open())
+				Assert::Fail(L"Failed to create the file");
+
+			file.write(expected.c_str(), expected.length());
+			file.close();
+
+			// Sends data
 			std::thread sending_thread([&] {
 				if (!server_view_model_.SendFile(path))
 					Assert::Fail(L"Couldn't send the file");
 				});
 
+			// Receives data
 			std::thread receiving_thread([&] {
 				if (!client_view_model_.ReceiveFile())
 					Assert::Fail(L"Couldn't receive the file");
@@ -27,7 +45,62 @@ namespace ViewModelTest
 			sending_thread.join();
 			receiving_thread.join();
 
-			Assert::IsTrue(true);
+			if (!std::filesystem::exists(path.filename()))
+				Assert::Fail(L"Didn't received content file");
+
+			file.open(path.filename(), std::ios::in);
+			if (!file.is_open())
+				Assert::Fail(L"Couldn't create received content file");
+
+			std::string actual(expected.length(), '\0');
+			file.read(&actual[0], expected.length());
+			file.close();
+
+			Assert::AreEqual(expected, actual);
+
+			// Removes test folder and file
+			try {
+				if (std::filesystem::exists(directory)) {
+					std::uintmax_t removed = std::filesystem::remove_all(directory);
+				}
+				else {
+					Assert::Fail(L"Directory does not exist");
+				}
+			}
+			catch (const std::filesystem::filesystem_error& e) {
+				std::string error = e.what();
+				Assert::Fail((L"Error: " + std::wstring(error.cbegin(), error.cend())).c_str());
+			}
+			if (std::filesystem::exists(path.filename()))
+				if (!std::filesystem::remove(path.filename().string().c_str()))
+					Assert::Fail(L"file does not exist");
+
+			CloseConnection();
+		}
+
+		TEST_METHOD(SendReceiveMessageTest)
+		{
+			OpenConnection();
+
+			std::string expected = "Hello World\nHow do you do?";
+
+			// Sends data
+			std::thread sending_thread([&] {
+				if (!server_view_model_.SendMessage(expected))
+					Assert::Fail(L"Couldn't send the file");
+				});
+
+			// Receives data
+			std::string actual;
+			std::thread receiving_thread([&] {
+				if (!client_view_model_.ReceiveMessage(actual))
+					Assert::Fail(L"Couldn't receive the file");
+				});
+
+			sending_thread.join();
+			receiving_thread.join();
+
+			Assert::AreEqual(expected, actual);
 
 			CloseConnection();
 		}
