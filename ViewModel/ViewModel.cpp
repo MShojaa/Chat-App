@@ -4,20 +4,24 @@
 #include "ViewModel.h"
 
 namespace msh {
-	void ViewModel::OnEvent(const UiEvent event) {
-		/*switch (event)
+	bool ViewModel::OnEvent(mshEvent::UiEvent *event) {
+		switch (event->event)
 		{
-		case UiEvent::kSendMessage:
-			break;
-		case UiEvent::kReceiveMessage:
-			break;
-		case UiEvent::kSendFile:
-			break;
-		case UiEvent::kReceiveFile:
-			break;
+		case mshEvent::kListen:
+			return Listen(event->port);
+		case mshEvent::kConnect:
+			return Connect(event->ip, event->port);
+		case mshEvent::kSendFile:
+			return SendFile(event->file_name);
+		case mshEvent::kReceiveFile:
+			return ReceiveFile();
+		case mshEvent::kSendMessage:
+			return SendMessage(event->message);
+		case mshEvent::kReceiveMessage:
+			return ReceiveMessage(event->message);
 		default:
-			break;
-		}*/
+			return false;
+		}
 	}
 
 	bool ViewModel::Listen(const int port) {

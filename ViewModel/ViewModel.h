@@ -11,7 +11,8 @@ namespace msh {
 		/// Handles UI events
 		/// </summary>
 		/// <param name="event"> events sent by UI </param>
-		void OnEvent(const UiEvent event);
+		/// <returns> true on success or false on failure </returns>
+		bool OnEvent(mshEvent::UiEvent *event);
 
 		/// <summary>
 		/// Listens on a port given (Server)
