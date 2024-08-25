@@ -5,6 +5,11 @@
 #define PRINTW(x) std::wcout << x
 
 int main() {
+	msh::Presenter presenter;
+	PRINT("Port: ");
+	int port = presenter.GetPort(54000);
+
+	LOG('\n' << port);
 
 	return EXIT_SUCCESS;
 }

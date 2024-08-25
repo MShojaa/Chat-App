@@ -9,7 +9,7 @@ int MainScreen::SelectMenu() {
 		switch (selected_menu_) {
 		case mshEvent::EnumEvent::kListen:
 		{
-			int port = presenter_.GetPort();
+			int port = presenter_.GetPort(54000);
 			if (port > -1)
 				view_model_.Listen(port);
 			break;
@@ -17,7 +17,7 @@ int MainScreen::SelectMenu() {
 		case mshEvent::EnumEvent::kConnect:
 		{
 			std::string ip = presenter_.GetIp();
-			int port = presenter_.GetPort();
+			int port = presenter_.GetPort(54000);
 			view_model_.Connect(ip, port);
 			break;
 		}

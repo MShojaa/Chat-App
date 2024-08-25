@@ -65,7 +65,102 @@ namespace msh {
 		console_.ClearScreen();
 	}
 
-	int Presenter::GetPort() {
+	int Presenter::GetPort(int default_port) {
+		std::string line = std::to_string(default_port);
+		ShowCursor(false);
+		console_.Print(line);
+		console_.CursorGoLeft((int)line.length());
+		ShowCursor(true);
+		auto coord = console_.GetCursorPosition();
+		int x_pos = 0;
+		const int max_length = 5;
+
+		bool has_default_value = !line.empty();
+
+		auto is_valid = [](const char ch) {
+			return(ch >= '0' && ch <= '9');
+		};
+
+		char key;
+		while (true) {
+
+			key = _getch();
+
+			switch (key)
+			{
+			case kDoubleKey:
+
+				key = _getch();
+				switch (key)
+				{
+				case kArrowLeft:
+					if (x_pos > 0) {
+						console_.CursorGoLeft(1);
+						--x_pos;
+					}
+					break;
+				case kArrowRight:
+				{
+					int max_pos = min(max_length, (int)line.length());
+					if (x_pos < max_pos) {
+						console_.CursorGoRight(1);
+						++x_pos;
+					}
+				}
+					break;
+				default:
+					break;
+				}
+				has_default_value = false;
+				break;
+			case kBackspace:
+				if (has_default_value) {
+					console_.ShowCursor(false);
+					console_.Print(std::string(line.length(), ' '));
+					console_.CursorGoLeft(line.length());
+					line = "";
+					console_.ShowCursor(true);
+					has_default_value = false;
+				} else if (x_pos > 0) {
+					console_.CursorGoLeft(1);
+					console_.Print(line, x_pos);
+					console_.Print(' ');
+					--x_pos;
+					line.erase(line.cbegin() + x_pos);
+					console_.CursorGotoX(coord.X + x_pos);
+				}
+
+				break;
+			case kEnter:
+				return std::stoi(line);
+			case kEsc:
+				return -1;
+			default:
+				if (line.length() < max_length) {
+					if (is_valid(key)) {
+						console_.Print(key);
+						console_.ShowCursor(false);
+						console_.Print(line, x_pos);
+						console_.ShowCursor(true);
+						console_.CursorGoLeft((int)line.length() - x_pos);
+						line += key;
+						++x_pos;
+					}
+				} else if (has_default_value) {
+					if (is_valid(key)) {
+						console_.Print(key);
+						console_.ShowCursor(false);
+						console_.Print(std::string(line.length(), ' '));
+						console_.CursorGoLeft((int)line.length());
+						console_.ShowCursor(true);
+						line = key;
+						has_default_value = false;
+						++x_pos;
+					}
+				}
+				break;
+			}
+		}
 		return console_._getuint(5);
 	}
 

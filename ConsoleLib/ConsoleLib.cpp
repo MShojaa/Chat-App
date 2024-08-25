@@ -105,6 +105,24 @@ namespace msh {
         }
     }
 
+    void ConsoleLib::Print(const int number) {
+        PRINT(number);
+    }
+
+    void ConsoleLib::Print(const char ch) {
+        PRINT(ch);
+    }
+
+    void ConsoleLib::Print(const std::string& str) {
+        PRINT(str);
+    }
+
+    void ConsoleLib::Print(const std::string& str, const size_t start_index) {
+        for (size_t i = start_index; i < str.length(); ++i) {
+            Print(str[i]);
+        }
+    }
+
     std::string ConsoleLib::GetLine(const int max_length) {
         std::optional<std::string> line = GetLine(max_length, [](const char) {return true; });
         if (line.has_value())
@@ -117,6 +135,68 @@ namespace msh {
         char key;
         std::string line = "";
         int x_pos = 0;
+
+        while (true) {
+
+            key = _getch();
+
+            switch (key)
+            {
+            case kDoubleKey:
+
+                key = _getch();
+                switch (key)
+                {
+                case kArrowLeft:
+                    if (x_pos > 0) {
+                        CursorGoLeft(1);
+                        --x_pos;
+                    }
+                    break;
+                case kArrowRight:
+                    if (x_pos < max_length - 1) {
+                        CursorGoRight(1);
+                        ++x_pos;
+                    }
+                    break;
+                default:
+                    break;
+                }
+                break;
+            case kBackspace:
+                CursorGoLeft(1);
+                Print(line, x_pos);
+                Print(' ');
+                --x_pos;
+                line.erase(line.cbegin() + x_pos);
+                CursorGotoX(x_pos);
+                break;
+            case kEnter:
+                return line;
+            case kEsc:
+                return std::nullopt;
+            default:
+                if (line.length() < max_length)
+                    if (is_valid(key)) {
+                        Print(key);
+                        line += key;
+                        ++x_pos;
+                    }
+                break;
+            }
+        }
+    }
+
+    std::optional<std::string> ConsoleLib::GetLine(const std::string& default_line, const int max_length, bool(*is_valid)(const char key)) {
+        char key;
+        std::string line = default_line;
+        ShowCursor(false);
+        Print(line);
+        CursorGoLeft((int)line.length());
+        ShowCursor(true);
+        int x_pos = 0;
+
+        bool has_default_value = !line.empty();
 
         while (true) {
 
@@ -257,23 +337,5 @@ namespace msh {
     ConsoleLib::ConsoleLib() {
         // Gets the console handle for standard output
         handle_ = GetStdHandle(STD_OUTPUT_HANDLE);
-    }
-
-    //inline bool ConsoleLib::is_digit(const char ch) {
-    //    return (ch >= '0' && ch <= '9');
-    //}
-
-    void ConsoleLib::Print(const char ch) {
-        PRINT(ch);
-    }
-
-    void ConsoleLib::Print(const std::string& str) {
-        PRINT(str);
-    }
-
-    void ConsoleLib::Print(const std::string& str, const size_t start_index) {
-        for (size_t i = start_index; i < str.length(); ++i) {
-            Print(str[i]);
-        }
     }
 }

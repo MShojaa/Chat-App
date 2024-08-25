@@ -22,7 +22,7 @@ namespace msh {
 
 		void ClearScreen();
 
-		int GetPort();
+		int GetPort(int default_port);
 		std::string GetIp();
 
 		Presenter(const int color = 12);

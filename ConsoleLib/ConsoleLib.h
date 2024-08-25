@@ -84,6 +84,31 @@ namespace msh {
         /// <param name="mode"> determines how to clear the line </param>
         void ClearLine(ClearLineMode mode = ClearLineMode::kLine) const;
 
+        /// <summary>
+        /// Prints a number on the console
+        /// </summary>
+        /// <param name="number"> number to print </param>
+        static void Print(const int number);
+
+        /// <summary>
+        /// Prints a character on the console
+        /// </summary>
+        /// <param name="ch"> character to print </param>
+        static void Print(const char ch);
+
+        /// <summary>
+        /// Prints a string on the console
+        /// </summary>
+        /// <param name="str"> string to print </param>
+        static void Print(const std::string& str);
+
+        /// <summary>
+        /// Prints a string from index to the end
+        /// </summary>
+        /// <param name="str"> string to print </param>
+        /// <param name="start_index"> start index to print </param>
+        static void Print(const std::string& str, const size_t start_index);
+
         std::string GetLine(const int max_length);
 
         /// <summary>
@@ -93,6 +118,7 @@ namespace msh {
         /// <param name="is_valid"> function to validate input data </param>
         /// <returns> std::nullopt if Esc pressed and the line if Enter pressed </returns>
         std::optional<std::string> GetLine(const int max_length, bool (*is_valid)(const char key));
+        std::optional<std::string> GetLine(const std::string &line, const int max_length, bool (*is_valid)(const char key));
         std::optional<std::string> GetLine(const int max_length, bool (*is_valid)(const char key, const std::string &line));
 
         /// <summary>
@@ -125,33 +151,5 @@ namespace msh {
         /// Stores handle to console
         /// </summary>
         HANDLE handle_;
-
-        /// <summary>
-        /// Checks if the character is digit or not
-        /// </summary>
-        /// <param name="ch"></param>
-        /// <returns> true if it is digit or false if it is not </returns>
-        //bool is_digit(const char ch);
-
-        /// <summary>
-        /// Prints a character on the console
-        /// </summary>
-        /// <param name="ch"> character to print </param>
-        static void Print(const char ch);
-
-        /// <summary>
-        /// Prints a string on the console
-        /// </summary>
-        /// <param name="str"> string to print </param>
-        static void Print(const std::string& str);
-
-        /// <summary>
-        /// Prints a string from index to the end
-        /// </summary>
-        /// <param name="str"> string to print </param>
-        /// <param name="start_index"> start index to print </param>
-        static void Print(const std::string& str, const size_t start_index);
-
-        //void PrintLine(const std::vector<std::string>& lines);
     };
 }
