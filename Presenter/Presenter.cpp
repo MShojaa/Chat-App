@@ -61,6 +61,18 @@ namespace msh {
 		return selected_option;
 	}
 
+	void Presenter::ClearScreen() {
+		console_.ClearScreen();
+	}
+
+	int Presenter::GetPort() {
+		return console_._getuint(5);
+	}
+
+	std::string Presenter::GetIp() {
+		return std::string();
+	}
+
 	Presenter::Presenter(const int color) {
 		(void)SetSelectColor(color).SetDefaultColor(7);
 	}

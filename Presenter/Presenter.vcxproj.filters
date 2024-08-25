@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Main Screen">
+      <UniqueIdentifier>{ab71905d-2713-4300-8c78-a4cdd1b42e58}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main Screen\Components">
+      <UniqueIdentifier>{82ddc4ea-7618-4260-8587-81dcf66334ae}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -24,6 +30,9 @@
     <ClInclude Include="Presenter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="MainScreen.h">
+      <Filter>Main Screen</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Presenter.cpp">
@@ -31,6 +40,9 @@
     </ClCompile>
     <ClCompile Include="pch.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MainScreen.cpp">
+      <Filter>Main Screen</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -13,6 +13,8 @@
 #include <conio.h>
 #include <Windows.h>
 #include <iostream>
+#include <optional>
+#include <string>
 
 #define LOG(x) std::cout << x << std::endl
 #define PRINT(x) std::cout << x

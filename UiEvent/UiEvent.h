@@ -6,7 +6,7 @@
 namespace mshEvent {
 
 	enum EnumEvent {
-		kInvalid,
+		kInvalid = -1,
 		kListen, kConnect,
 		kSendMessage, kReceiveMessage,
 		kSendFile, kReceiveFile,

@@ -15,5 +15,8 @@
 #include <vector>
 
 #include "ConsoleLib.h"
+#include "Presenter.h"
+#include "UiEvent.h"
+#include "ViewModel.h"
 
 #endif //PCH_H
