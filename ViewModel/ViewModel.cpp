@@ -6,7 +6,6 @@
 namespace msh {
 
 #define SERVER_APP
-//#define CLIENT_APP
 
 	enum EventMode {
 #ifdef SERVER_APP
@@ -37,7 +36,7 @@ namespace msh {
 	}
 
 	bool ViewModel::Listen(const int port) {
-		bool result[4];
+		bool result[4]{};
 		std::thread send_message_thread([&] {
 			result[EventMode::kSendMessage] = socket_[EventMode::kSendMessage].Listen(port);
 			});
@@ -60,7 +59,7 @@ namespace msh {
 	}
 
 	bool ViewModel::Connect(const std::string& ip, const int port) {
-		bool result[4];
+		bool result[4]{};
 		std::thread receive_message_thread([&] {
 			result[EventMode::kReceiveMessage] = socket_[EventMode::kReceiveMessage].Connect(ip, port);  // == Server's SendMessage()
 			});
@@ -103,7 +102,7 @@ namespace msh {
 		msh::Flow buffer;
 
 		// Reads data from file and writes them to the buffer asynchronously
-		std::thread reading_thread([this, &buffer]() {
+		std::thread reading_thread([this, &buffer] {
 			// Writes the file content in to the buffer
 			file_.ReadAsync(buffer);
 			});
@@ -111,8 +110,10 @@ namespace msh {
 		// Sends data through network and pops data out of buffer asynchronously
 		bool result = false;
 		std::thread sending_thread([this, &buffer, &result, &path] {
-			// Sends the file name
-			result = socket_[EventMode::kSendFile].Send(path.filename().string());
+			// Sends the file name and its size -> separated with comma ','
+			result = socket_[EventMode::kSendFile].Send(path.filename().string() + ',' + std::to_string(file_.GetSize()));
+
+			// Receives the answer from client == last_packet_
 			auto sent_file = socket_[EventMode::kSendFile].Receive();
 			if (!sent_file.has_value() || sent_file.value() != last_packet_)
 				return;
@@ -147,6 +148,7 @@ namespace msh {
 		if (!socket_[EventMode::kReceiveFile].Send(last_packet_))
 			return result;  // false
 
+		long long file_size = 
 		// Opens a file to write content in it
 		file_.Open(file_name.value(), msh::FileMode::kWrite);
 		if (!file_.IsOpen()) {
@@ -155,15 +157,15 @@ namespace msh {
 		}
 
 		// Creates an async buffer to receive and write data asynchronously
-		msh::Flow buffer;
+		msh::Flow<std::string> buffer;
 
 		// Receives data from network and writes them to the buffer asynchronously
-		std::thread receiving_thread([this, &buffer, &result]() {
+		std::thread receiving_thread([this, &buffer, &result] {
 			result = socket_[EventMode::kReceiveFile].ReceiveAsyncUntil(buffer, last_packet_);
 			});
 
 		// Writes data in a file and pops data out of buffer asynchronously
-		std::thread writing_thread([this, &buffer]() {
+		std::thread writing_thread([this, &buffer] {
 			file_.WriteAsync(buffer);
 			});
 

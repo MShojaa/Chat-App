@@ -21,7 +21,9 @@ namespace mshEvent {
 		const static EnumEvent event = kInvalid;
 
 	protected:
-		UiEvent() = default;
+		UiEvent() {
+			port = 54000;
+		}
 	};
 
 	class SendFile : UiEvent {

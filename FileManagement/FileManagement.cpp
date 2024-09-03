@@ -148,6 +148,19 @@ namespace msh {
 
 	}
 
+	long long FileManagement::GetSize() {
+		if (hFile_ == INVALID_HANDLE_VALUE)
+			return 0;
+
+		LARGE_INTEGER file_size;
+		if (GetFileSizeEx(hFile_, &file_size))
+			return file_size.QuadPart;
+		else {
+			std::cout << "file size error: " << GetLastError() << std::endl;
+			return 0;
+		}
+	}
+
 	FileManagement::~FileManagement() {
 		this->Close();
 	}

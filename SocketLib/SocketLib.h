@@ -75,6 +75,8 @@ namespace msh {
         /// <returns> true on success and false on failure </returns>
         bool ReceiveAsyncUntil(msh::Flow<std::string>& buffer, const std::string& finished_message);
 
+        bool ReceiveAsyncUntil(msh::Flow<std::string>& buffer, const long long number_of_chunks);
+
         /// <summary>
         /// Gets local IPV4 (Server)
         /// </summary>
@@ -113,5 +115,12 @@ namespace msh {
         /// Stores client's attributes
         /// </summary>
         SOCKET client_socket_;
+
+#define DEBUG_MODE
+#ifdef DEBUG_MODE
+        /*int packet_sent;
+        int packet_received;*/
+#endif // DEBUG_MODE
+
     };
 }

@@ -22,7 +22,7 @@ namespace msh {
         }
 
         // Bind socket to port
-        sockaddr_in serverAddr;
+        sockaddr_in serverAddr{};
         serverAddr.sin_family = AF_INET;
         serverAddr.sin_addr.S_un.S_addr = INADDR_ANY;
         serverAddr.sin_port = htons(port);
@@ -40,7 +40,7 @@ namespace msh {
         }
 
         // Accept a connection
-        sockaddr_in clientAddr;
+        sockaddr_in clientAddr{};
         int clientSize = sizeof(clientAddr);
         client_socket_ = accept(server_socket_, (sockaddr*)&clientAddr, &clientSize);
         if (client_socket_ == INVALID_SOCKET) {
@@ -69,7 +69,7 @@ namespace msh {
         }
 
         // Connect to server
-        sockaddr_in serverAddr;
+        sockaddr_in serverAddr{};
         serverAddr.sin_family = AF_INET;
         inet_pton(AF_INET, ip.c_str(), &serverAddr.sin_addr);
         serverAddr.sin_port = htons(port);
@@ -107,6 +107,11 @@ namespace msh {
     }
 
     bool SocketLib::SendAsync(msh::Flow<std::string>& buffer) {
+
+#ifdef DEBUG_MODE
+        int counter = 0;
+#endif // DEBUG_MODE
+
         while (true) {
             std::optional<std::string> temp_buffer = buffer.pop_async();
             if (!temp_buffer.has_value())
@@ -115,7 +120,15 @@ namespace msh {
             // Returns false on network error
             if (!this->Send(temp_buffer.value()))
                 return false;
+
+#ifdef DEBUG_MODE
+            ++counter;
+            std::cout << "counter: " << counter << std::endl;
+#endif // DEBUG_MODE
         }
+#ifdef DEBUG_MODE
+        std::cout << "packet sent: " << counter << std::endl;
+#endif // DEBUG_MODE
 
         return true;
     }
@@ -179,18 +192,77 @@ namespace msh {
 
         bool result = false;
 
+#ifdef DEBUG_MODE
+        int counter = 0;
+#endif // DEBUG_MODE
+
         while (true) {
             result = this->ReceiveAsync(buffer);
-            
+
+#ifdef DEBUG_MODE
+            ++counter;
+            std::cout << "counter: " << counter << " | ";
+            std::cout << "result: " << result << std::endl;
+            //std::cout << "length: " << buffer.last_element().length() << std::endl;
+
+            //if (buffer.last_element().length() < 500) {
+            //std::cout << " -> " << buffer.last_element();
+            //}
+            std::cout << std::endl;
+#endif // DEBUG_MODE
+
             if (!result) {
                 // Handles error
                 break;  // result == false
             } else if (buffer.last_element() == finished_message) {
                 // if result == true, then buffer has some value in it
                 (void)buffer.pop_async();
+
                 break;  // result == true
             }
         }
+#ifdef DEBUG_MODE
+       std::cout << "packet received: " << counter << " | result: " << result << std::endl;
+#endif // DEBUG_MODE
+
+        buffer.finished();
+        return result;
+    }
+
+
+    bool SocketLib::ReceiveAsyncUntil(msh::Flow<std::string>& buffer, const long long number_of_chunks) {
+
+        std::string return_value;
+
+        bool result = false;
+
+#ifdef DEBUG_MODE
+        int counter = 0;
+#endif // DEBUG_MODE
+
+        for (size_t i = 0; i < number_of_chunks; ++i) {
+            result = this->ReceiveAsync(buffer);
+
+#ifdef DEBUG_MODE
+            ++counter;
+            std::cout << "counter: " << counter << " | ";
+            std::cout << "result: " << result << std::endl;
+            //std::cout << "length: " << buffer.last_element().length() << std::endl;
+
+            //if (buffer.last_element().length() < 500) {
+            //std::cout << " -> " << buffer.last_element();
+            //}
+            std::cout << std::endl;
+#endif // DEBUG_MODE
+
+            if (!result) {
+                // Handles error
+                break;  // result == false
+            }
+        }
+#ifdef DEBUG_MODE
+        std::cout << "packet received: " << counter << " | result: " << result << std::endl;
+#endif // DEBUG_MODE
 
         buffer.finished();
         return result;

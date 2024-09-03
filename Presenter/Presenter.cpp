@@ -137,9 +137,10 @@ namespace msh {
 		const std::string default_ip_port = ip_port.first + ':' + std::to_string(ip_port.second);
 		auto result = GetLine(default_ip_port, 21, is_valid);
 
-		if (!result.has_value())
+		if (!result.has_value()) {
 			ip_port = std::make_pair("", 0);
 			return *this;
+		}
 
 		std::string ip;
 		int port;
@@ -147,7 +148,7 @@ namespace msh {
 		int port_index = (int)result.value().find_last_of(':');
 		if (port_index < result.value().length()) {
 			ip = result.value().substr(0, port_index);
-			port = std::stoi(result.value().substr(port_index + 1));
+			port = std::stoi(result.value().substr((size_t)port_index + 1));
 		} else {
 			ip = result.value();
 			port = 54000;
@@ -313,18 +314,7 @@ namespace msh {
 			case kEsc:
 				return std::nullopt;
 			default:
-				if (line.length() < max_length) {
-					if (is_valid(key)) {
-						console_.Print(key);
-						console_.ShowCursor(false);
-						console_.Print(line, x_pos);
-						console_.ShowCursor(true);
-						console_.CursorGoLeft((int)line.length() - x_pos);
-						line.insert(line.cbegin() + x_pos, key);
-						++x_pos;
-					}
-				}
-				else if (has_default_value) {
+				if (has_default_value) {
 					if (is_valid(key)) {
 						console_.Print(key);
 						console_.ShowCursor(false);
@@ -333,6 +323,16 @@ namespace msh {
 						console_.ShowCursor(true);
 						line = key;
 						has_default_value = false;
+						++x_pos;
+					}
+				} else if (line.length() < max_length) {
+					if (is_valid(key)) {
+						console_.Print(key);
+						console_.ShowCursor(false);
+						console_.Print(line, x_pos);
+						console_.ShowCursor(true);
+						console_.CursorGoLeft((int)line.length() - x_pos);
+						line.insert(line.cbegin() + x_pos, key);
 						++x_pos;
 					}
 				}

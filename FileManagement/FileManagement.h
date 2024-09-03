@@ -68,6 +68,8 @@ namespace msh {
 		/// </summary>
 		void Close();
 
+		long long GetSize();
+
 		/// <summary>
 		/// Closes the opened file
 		/// Calls Close() method

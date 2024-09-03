@@ -25,20 +25,25 @@ bool ChatScreen::Show() {
 		std::string received_massage;
 		while (true) {
 			bool result = view_model_.ReceiveMessage(received_massage);
-			if (!result)
+			if (!result) {
 				presenter_.log("Couldn't receive message");
-
-			presenter_.ClearLine().Print("Not you: ").log(received_massage).Print("You: ");
+				return;
+			} else {
+				presenter_.ClearLine().Print("Not you: ").log(received_massage).Print("You: ");
+			}
 		}
 	});
 
+	// TODO: This thread is not handling failing received file (e.g: when the file exists or such that error, sending from the host will be continued)
 	std::thread receive_file_thread([&] {
 		while (true) {
 			bool result = view_model_.ReceiveFile();
-			if (!result)
+			if (!result) {
 				presenter_.log("Couldn't receive file");
-			else
+				return;
+			} else {
 				presenter_.log("Received successfully");
+			}
 		}
 	});
 
