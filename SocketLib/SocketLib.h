@@ -37,7 +37,7 @@ namespace msh {
         /// </summary>
         /// <param name="message"> message (data) to send </param>
         /// <returns> true on success and false on failure </returns>
-        bool SendAsync(msh::Flow &buffer);
+        bool SendAsync(msh::Flow<std::string> &buffer);
 
         /// <summary>
         /// Receives data from 
@@ -58,7 +58,7 @@ namespace msh {
         /// </summary>
         /// <param name="buffer"> Received data from network </param>
         /// <returns> true on success and false on failure </returns>
-        bool ReceiveAsync(msh::Flow& buffer);
+        bool ReceiveAsync(msh::Flow<std::string>& buffer);
 
         /// <summary>
         /// Receives data from network until receive the finished_message
@@ -73,13 +73,13 @@ namespace msh {
         /// <param name="buffer"> Received data from network </param>
         /// <param name="finished_message"> Determines last packet </param>
         /// <returns> true on success and false on failure </returns>
-        bool ReceiveAsyncUntil(msh::Flow& buffer, const std::string& finished_message);
+        bool ReceiveAsyncUntil(msh::Flow<std::string>& buffer, const std::string& finished_message);
 
         /// <summary>
         /// Gets local IPV4 (Server)
         /// </summary>
         /// <returns> local IPV4 </returns>
-        std::string GetLocalIPV4();
+        static std::string GetLocalIPV4();
 
         /// <summary>
         /// Gets client's ip (Server)

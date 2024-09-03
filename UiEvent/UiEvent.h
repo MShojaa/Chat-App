@@ -24,25 +24,6 @@ namespace mshEvent {
 		UiEvent() = default;
 	};
 
-	class Listen : UiEvent {
-	public:
-		Listen(const int port) {
-			this->port = port;
-		};
-
-		const static EnumEvent event = kListen;
-	};
-
-	class Connect : UiEvent {
-	public:
-		Connect(const std::string &ip, const int port) {
-			this->ip = ip;
-			this->port = port;
-		};
-
-		const static EnumEvent event = kConnect;
-	};
-
 	class SendFile : UiEvent {
 	public:
 		SendFile(const std::string& file_name) {

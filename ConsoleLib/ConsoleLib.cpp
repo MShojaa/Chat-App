@@ -81,7 +81,8 @@ namespace msh {
             Print("\033[1J");
             return;
         case ClearScreenMode::kScreen:
-            Print("\033[2J");
+            //Print("\033[2J");
+            system("cls");
             return;
         default:
             return;

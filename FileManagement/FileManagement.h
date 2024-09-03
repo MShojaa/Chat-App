@@ -49,7 +49,7 @@ namespace msh {
 		/// Reads data from the opened file asynchronously
 		/// </summary>
 		/// <param name="buffer"> stores data async in it </param>
-		void ReadAsync(msh::Flow& buffer);
+		void ReadAsync(msh::Flow<std::string>& buffer);
 
 		/// <summary>
 		/// Writes content in to the opened file
@@ -61,7 +61,7 @@ namespace msh {
 		/// Writes content in to the opened file asynchronously
 		/// </summary>
 		/// <param name="buffer"> content to write </param>
-		void WriteAsync(msh::Flow& buffer);
+		void WriteAsync(msh::Flow<std::string>& buffer);
 
 		/// <summary>
 		/// Closes the opened file

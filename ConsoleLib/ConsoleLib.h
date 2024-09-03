@@ -12,7 +12,8 @@ namespace msh {
     enum Keyboard {
         kEsc = 27,
         kEnter = 13, kBackspace = 8,
-        kArrowUp = 72, kArrowDown = 80, kArrowLeft = 75, kArrowRight = 77, kDoubleKey = -32
+        kArrowUp = 72, kArrowDown = 80, kArrowLeft = 75, kArrowRight = 77, kDoubleKey = -32,
+        kCtrlF = 6
     };
 
     class ConsoleLib {

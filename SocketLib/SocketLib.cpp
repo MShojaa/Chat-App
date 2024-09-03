@@ -106,7 +106,7 @@ namespace msh {
         return true;
     }
 
-    bool SocketLib::SendAsync(msh::Flow& buffer) {
+    bool SocketLib::SendAsync(msh::Flow<std::string>& buffer) {
         while (true) {
             std::optional<std::string> temp_buffer = buffer.pop_async();
             if (!temp_buffer.has_value())
@@ -148,7 +148,7 @@ namespace msh {
         }
     }
 
-    bool SocketLib::ReceiveAsync(msh::Flow& buffer) {
+    bool SocketLib::ReceiveAsync(msh::Flow<std::string>& buffer) {
 
         std::optional<std::string> received_packet = this->Receive();
         if (!received_packet.has_value())
@@ -173,7 +173,7 @@ namespace msh {
         return return_value;
     }
 
-    bool SocketLib::ReceiveAsyncUntil(msh::Flow& buffer, const std::string& finished_message) {
+    bool SocketLib::ReceiveAsyncUntil(msh::Flow<std::string>& buffer, const std::string& finished_message) {
 
         std::string return_value;
 

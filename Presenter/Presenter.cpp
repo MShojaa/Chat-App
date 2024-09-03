@@ -61,111 +61,99 @@ namespace msh {
 		return selected_option;
 	}
 
-	void Presenter::ClearScreen() {
+	Presenter& Presenter::ClearScreen() {
 		console_.ClearScreen();
+		return *this;
 	}
 
-	int Presenter::GetPort(int default_port) {
-		std::string line = std::to_string(default_port);
-		ShowCursor(false);
+	Presenter& Presenter::ClearLine() {
+		console_.ClearLine();
+		console_.CursorGotoX();
+		return *this;
+	}
+
+	Presenter& Presenter::ShowCursor(const bool is_visible) {
+		console_.ShowCursor(is_visible);
+		return *this;
+	}
+
+	void Presenter::GetChar(msh::Flow<char>& key) {
+		key.push_async(console_._getch());
+	}
+
+	/*mshEvent::UiEvent Presenter::UiEvent() {
+		auto result = this->GetLine([](char key) {
+			return (key != msh::kDoubleKey &&
+				key != '\\' && key != '/' &&
+				key != ':' && key != '*' &&
+				key != '?' && key != '\"' &&
+				key != '<' && key != '>' &&
+				key != '|'
+			);
+		});
+
+		if (result.has_value())
+			return mshEvent::kInvalid;
+		else if (result.value() == "Receive File")
+			return mshEvent::kSendFile;
+		else
+			return mshEvent::kSendMessage;
+	}*/
+
+	Presenter& Presenter::Print(const std::string& line) {
 		console_.Print(line);
-		console_.CursorGoLeft((int)line.length());
-		ShowCursor(true);
-		auto coord = console_.GetCursorPosition();
-		int x_pos = 0;
-		const int max_length = 5;
+		return *this;
+	}
 
-		bool has_default_value = !line.empty();
+	Presenter& Presenter::log(const std::string& line) {
+		console_.Print(line + "\n");
+		return *this;
+	}
 
+	Presenter& Presenter::GetPort(int &default_port) {
 		auto is_valid = [](const char ch) {
 			return(ch >= '0' && ch <= '9');
 		};
 
-		char key;
-		while (true) {
-
-			key = _getch();
-
-			switch (key)
-			{
-			case kDoubleKey:
-
-				key = _getch();
-				switch (key)
-				{
-				case kArrowLeft:
-					if (x_pos > 0) {
-						console_.CursorGoLeft(1);
-						--x_pos;
-					}
-					break;
-				case kArrowRight:
-				{
-					int max_pos = min(max_length, (int)line.length());
-					if (x_pos < max_pos) {
-						console_.CursorGoRight(1);
-						++x_pos;
-					}
-				}
-					break;
-				default:
-					break;
-				}
-				has_default_value = false;
-				break;
-			case kBackspace:
-				if (has_default_value) {
-					console_.ShowCursor(false);
-					console_.Print(std::string(line.length(), ' '));
-					console_.CursorGoLeft(line.length());
-					line = "";
-					console_.ShowCursor(true);
-					has_default_value = false;
-				} else if (x_pos > 0) {
-					console_.CursorGoLeft(1);
-					console_.Print(line, x_pos);
-					console_.Print(' ');
-					--x_pos;
-					line.erase(line.cbegin() + x_pos);
-					console_.CursorGotoX(coord.X + x_pos);
-				}
-
-				break;
-			case kEnter:
-				return std::stoi(line);
-			case kEsc:
-				return -1;
-			default:
-				if (line.length() < max_length) {
-					if (is_valid(key)) {
-						console_.Print(key);
-						console_.ShowCursor(false);
-						console_.Print(line, x_pos);
-						console_.ShowCursor(true);
-						console_.CursorGoLeft((int)line.length() - x_pos);
-						line += key;
-						++x_pos;
-					}
-				} else if (has_default_value) {
-					if (is_valid(key)) {
-						console_.Print(key);
-						console_.ShowCursor(false);
-						console_.Print(std::string(line.length(), ' '));
-						console_.CursorGoLeft((int)line.length());
-						console_.ShowCursor(true);
-						line = key;
-						has_default_value = false;
-						++x_pos;
-					}
-				}
-				break;
+		//console_.Print("Port: ");
+		auto result = GetLine(std::to_string(default_port), 5, is_valid);
+		if (result.has_value()) {
+			if (result.value().empty()) {
+				default_port = 54000;
+			} else {
+				default_port = std::stoi(result.value());
 			}
 		}
-		return console_._getuint(5);
+
+		return *this;
 	}
 
-	std::string Presenter::GetIp() {
-		return std::string();
+	Presenter& Presenter::GetIpPort(std::pair<std::string, int> &ip_port) {
+		auto is_valid = [](const char ch) {
+			return((ch >= '0' && ch <= '9') || ch == ':' || ch == '.');
+			};
+
+		console_.Print("IP:Port -> ");
+		const std::string default_ip_port = ip_port.first + ':' + std::to_string(ip_port.second);
+		auto result = GetLine(default_ip_port, 21, is_valid);
+
+		if (!result.has_value())
+			ip_port = std::make_pair("", 0);
+			return *this;
+
+		std::string ip;
+		int port;
+
+		int port_index = (int)result.value().find_last_of(':');
+		if (port_index < result.value().length()) {
+			ip = result.value().substr(0, port_index);
+			port = std::stoi(result.value().substr(port_index + 1));
+		} else {
+			ip = result.value();
+			port = 54000;
+		}
+		ip_port = std::make_pair(ip, port);
+		return *this;
 	}
 
 	Presenter::Presenter(const int color) {
@@ -182,6 +170,174 @@ namespace msh {
 				console_.SetTextColor(default_color_);
 
 			LOG(options[i]);
+		}
+	}
+
+	std::optional<std::string> Presenter::GetLine(bool (*is_valid)(const char key), const int max_length) {
+		auto coord = console_.GetCursorPosition();
+		int x_pos = 0;
+		std::string line = "";
+
+		char key;
+		while (true) {
+
+			key = console_._getch();
+
+			switch (key)
+			{
+			case kDoubleKey:
+
+				key = console_._getch();
+				switch (key)
+				{
+				case kArrowLeft:
+					if (x_pos > 0) {
+						console_.CursorGoLeft(1);
+						--x_pos;
+					}
+					break;
+				case kArrowRight:
+				{
+					int max_pos = min(max_length, (int)line.length());
+					if (x_pos < max_pos) {
+						console_.CursorGoRight(1);
+						++x_pos;
+					}
+				}
+				break;
+				default:
+					break;
+				}
+				break;
+			case kBackspace:
+				if (x_pos > 0) {
+					console_.CursorGoLeft(1);
+					console_.Print(line, x_pos);
+					console_.Print(' ');
+					--x_pos;
+					line.erase(line.cbegin() + x_pos);
+					console_.CursorGotoX(coord.X + x_pos);
+				}
+
+				break;
+			case kCtrlF:
+				if (line.empty())
+					return "$$File$$";
+				break;
+			case kEnter:
+				console_.Print('\n');
+				return line;
+			case kEsc:
+				return std::nullopt;
+			default:
+				if (line.length() < max_length) {
+					if (is_valid(key)) {
+						console_.Print(key);
+						console_.ShowCursor(false);
+						console_.Print(line, x_pos);
+						console_.ShowCursor(true);
+						console_.CursorGoLeft((int)line.length() - x_pos);
+						line.insert(line.cbegin() + x_pos, key);
+						++x_pos;
+					}
+				}
+				break;
+			}
+		}
+	}
+
+	std::optional<std::string> Presenter::GetLine(const std::string& default_line, const int max_length, bool(*is_valid)(const char key)) {
+		std::string line = default_line;
+		ShowCursor(false);
+		console_.Print(line);
+		console_.CursorGoLeft((int)line.length());
+		ShowCursor(true);
+		auto coord = console_.GetCursorPosition();
+		int x_pos = 0;
+
+		bool has_default_value = !line.empty();
+
+		char key;
+		while (true) {
+
+			key = console_._getch();
+
+			switch (key)
+			{
+			case kDoubleKey:
+
+				key = console_._getch();
+				switch (key)
+				{
+				case kArrowLeft:
+					if (x_pos > 0) {
+						console_.CursorGoLeft(1);
+						--x_pos;
+					}
+					break;
+				case kArrowRight:
+				{
+					int max_pos = min(max_length, (int)line.length());
+					if (x_pos < max_pos) {
+						console_.CursorGoRight(1);
+						++x_pos;
+					}
+				}
+				break;
+				default:
+					break;
+				}
+				has_default_value = false;
+				break;
+			case kBackspace:
+				if (has_default_value) {
+					console_.ShowCursor(false);
+					console_.Print(std::string(line.length(), ' '));
+					console_.CursorGoLeft((int)line.length());
+					line = "";
+					console_.ShowCursor(true);
+					has_default_value = false;
+				}
+				else if (x_pos > 0) {
+					console_.CursorGoLeft(1);
+					console_.Print(line, x_pos);
+					console_.Print(' ');
+					--x_pos;
+					line.erase(line.cbegin() + x_pos);
+					console_.CursorGotoX(coord.X + x_pos);
+				}
+
+				break;
+			case kEnter:
+				return line;
+			case kEsc:
+				return std::nullopt;
+			default:
+				if (line.length() < max_length) {
+					if (is_valid(key)) {
+						console_.Print(key);
+						console_.ShowCursor(false);
+						console_.Print(line, x_pos);
+						console_.ShowCursor(true);
+						console_.CursorGoLeft((int)line.length() - x_pos);
+						line.insert(line.cbegin() + x_pos, key);
+						++x_pos;
+					}
+				}
+				else if (has_default_value) {
+					if (is_valid(key)) {
+						console_.Print(key);
+						console_.ShowCursor(false);
+						console_.Print(std::string(line.length(), ' '));
+						console_.CursorGoLeft((int)line.length());
+						console_.ShowCursor(true);
+						line = key;
+						has_default_value = false;
+						++x_pos;
+					}
+				}
+				break;
+			}
 		}
 	}
 }

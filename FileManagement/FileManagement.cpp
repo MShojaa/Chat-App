@@ -80,7 +80,7 @@ namespace msh {
 		return buffer;
 	}
 
-	void FileManagement::ReadAsync(msh::Flow& buffer) {
+	void FileManagement::ReadAsync(msh::Flow<std::string>& buffer) {
 
 		if (mode_ == FileMode::kWrite)
 			return;
@@ -123,7 +123,7 @@ namespace msh {
 		}
 	}
 
-	void FileManagement::WriteAsync(msh::Flow& buffer) {
+	void FileManagement::WriteAsync(msh::Flow<std::string>& buffer) {
 		while (true) {
 			std::optional<std::string> content = buffer.pop_async();
 			if (!content.has_value())

@@ -147,12 +147,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="ChatScreen.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="MainScreen.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Presenter.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ChatScreen.cpp" />
     <ClCompile Include="MainScreen.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

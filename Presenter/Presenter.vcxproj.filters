@@ -16,8 +16,8 @@
     <Filter Include="Main Screen">
       <UniqueIdentifier>{ab71905d-2713-4300-8c78-a4cdd1b42e58}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Main Screen\Components">
-      <UniqueIdentifier>{82ddc4ea-7618-4260-8587-81dcf66334ae}</UniqueIdentifier>
+    <Filter Include="Chat Screen">
+      <UniqueIdentifier>{517c5b5a-ecb0-4779-9832-5b38906523e0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -33,6 +33,9 @@
     <ClInclude Include="MainScreen.h">
       <Filter>Main Screen</Filter>
     </ClInclude>
+    <ClInclude Include="ChatScreen.h">
+      <Filter>Chat Screen</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Presenter.cpp">
@@ -43,6 +46,9 @@
     </ClCompile>
     <ClCompile Include="MainScreen.cpp">
       <Filter>Main Screen</Filter>
+    </ClCompile>
+    <ClCompile Include="ChatScreen.cpp">
+      <Filter>Chat Screen</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

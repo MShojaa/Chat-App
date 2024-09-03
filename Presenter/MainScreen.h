@@ -4,7 +4,7 @@
 
 class MainScreen {
 public:
-	int SelectMenu();
+	bool SelectMenu();
 
 	MainScreen(const std::vector<std::string>& menu, msh::ViewModel& view_model, msh::Presenter& presenter);
 
@@ -13,4 +13,6 @@ private:
 	int selected_menu_;
 	msh::Presenter& presenter_;
 	msh::ViewModel& view_model_;
+
+	std::pair<std::string, int> ip_port_;
 };

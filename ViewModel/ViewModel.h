@@ -62,6 +62,8 @@ namespace msh {
 		/// <returns> true on success or false on failure </returns>
 		bool ReceiveMessage(std::string& received_message);
 
+		std::string GetHostIp();
+
 		/// <summary>
 		/// Initializes last_packet_
 		/// </summary>
@@ -77,7 +79,7 @@ namespace msh {
 		/// <summary>
 		/// Handles network operations (listen/connect/send/receive)
 		/// </summary>
-		SocketLib socket_;
+		SocketLib socket_[4];
 
 		/// <summary>
 		/// Stores last packet for sending and receiving files
