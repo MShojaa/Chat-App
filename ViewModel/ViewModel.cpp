@@ -148,7 +148,7 @@ namespace msh {
 		if (!socket_[EventMode::kReceiveFile].Send(last_packet_))
 			return result;  // false
 
-		long long file_size = 
+		//long long file_size = 
 		// Opens a file to write content in it
 		file_.Open(file_name.value(), msh::FileMode::kWrite);
 		if (!file_.IsOpen()) {

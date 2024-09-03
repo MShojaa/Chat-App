@@ -1,11 +1,11 @@
 #include "pch.h"
 #include "framework.h"
 
-#include "String.h"
+#include "StringUtility.h"
 
 namespace msh {
 	namespace String {
-		std::string Trim(std::string_view str_view, const char trim_char = ' ') {
+		std::string Trim(std::string_view str_view, const char trim_char) {
 			while (str_view[0] == trim_char) {
 				str_view.remove_prefix(1);
 			}
@@ -17,7 +17,7 @@ namespace msh {
 			return std::string(str_view);
 		}
 
-		std::vector<std::string> Split(std::string_view str_view, const char delim = ',', const char trim_char = ' ') {
+		std::vector<std::string> Split(std::string_view str_view, const char delim, const char trim_char) {
 			std::vector<std::string> result;
 
 			size_t index;

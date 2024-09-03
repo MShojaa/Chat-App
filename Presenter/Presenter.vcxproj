@@ -79,7 +79,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)ConsoleLib;$(SolutionDir)UiEvent;$(SolutionDir)ViewModel;$(SolutionDir)Flow;$(SolutionDir)FileManagement;$(SolutionDir)SocketLib;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)ConsoleLib;$(SolutionDir)UiEvent;$(SolutionDir)ViewModel;$(SolutionDir)Flow;$(SolutionDir)FileManagement;$(SolutionDir)SocketLib;$(SolutionDir)StringUtility</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -98,7 +98,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)ConsoleLib;$(SolutionDir)UiEvent;$(SolutionDir)ViewModel;$(SolutionDir)Flow;$(SolutionDir)FileManagement;$(SolutionDir)SocketLib;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)ConsoleLib;$(SolutionDir)UiEvent;$(SolutionDir)ViewModel;$(SolutionDir)Flow;$(SolutionDir)FileManagement;$(SolutionDir)SocketLib;$(SolutionDir)StringUtility</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -117,7 +117,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)ConsoleLib;$(SolutionDir)UiEvent;$(SolutionDir)ViewModel;$(SolutionDir)Flow;$(SolutionDir)FileManagement;$(SolutionDir)SocketLib;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)ConsoleLib;$(SolutionDir)UiEvent;$(SolutionDir)ViewModel;$(SolutionDir)Flow;$(SolutionDir)FileManagement;$(SolutionDir)SocketLib;$(SolutionDir)StringUtility</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -136,7 +136,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)ConsoleLib;$(SolutionDir)UiEvent;$(SolutionDir)ViewModel;$(SolutionDir)Flow;$(SolutionDir)FileManagement;$(SolutionDir)SocketLib;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)ConsoleLib;$(SolutionDir)UiEvent;$(SolutionDir)ViewModel;$(SolutionDir)Flow;$(SolutionDir)FileManagement;$(SolutionDir)SocketLib;$(SolutionDir)StringUtility</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -176,6 +176,9 @@
     </ProjectReference>
     <ProjectReference Include="..\SocketLib\SocketLib.vcxproj">
       <Project>{be438049-0aac-4aae-829f-3c3acc1f90b5}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\StringUtility\StringUtility.vcxproj">
+      <Project>{9485944e-1322-4e42-a865-9da1bc327be6}</Project>
     </ProjectReference>
     <ProjectReference Include="..\UiEvent\UiEvent.vcxproj">
       <Project>{22317410-fafc-41bc-8573-3fd22fe2b8e1}</Project>

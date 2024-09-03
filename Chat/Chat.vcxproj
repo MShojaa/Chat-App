@@ -77,7 +77,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)Flow;$(SolutionDir)FileManagement;$(SolutionDir)SocketLib;$(SolutionDir)ConsoleLib;$(SolutionDir)Presenter;$(SolutionDir)ViewModel;$(SolutionDir)UiEvent</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Flow;$(SolutionDir)FileManagement;$(SolutionDir)SocketLib;$(SolutionDir)ConsoleLib;$(SolutionDir)Presenter;$(SolutionDir)ViewModel;$(SolutionDir)UiEvent;$(SolutionDir)StringUtility</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -93,7 +93,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)Flow;$(SolutionDir)FileManagement;$(SolutionDir)SocketLib;$(SolutionDir)ConsoleLib;$(SolutionDir)Presenter;$(SolutionDir)ViewModel;$(SolutionDir)UiEvent</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Flow;$(SolutionDir)FileManagement;$(SolutionDir)SocketLib;$(SolutionDir)ConsoleLib;$(SolutionDir)Presenter;$(SolutionDir)ViewModel;$(SolutionDir)UiEvent;$(SolutionDir)StringUtility</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -109,7 +109,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)Flow;$(SolutionDir)FileManagement;$(SolutionDir)SocketLib;$(SolutionDir)ConsoleLib;$(SolutionDir)Presenter;$(SolutionDir)ViewModel;$(SolutionDir)UiEvent</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Flow;$(SolutionDir)FileManagement;$(SolutionDir)SocketLib;$(SolutionDir)ConsoleLib;$(SolutionDir)Presenter;$(SolutionDir)ViewModel;$(SolutionDir)UiEvent;$(SolutionDir)StringUtility</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -125,7 +125,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)Flow;$(SolutionDir)FileManagement;$(SolutionDir)SocketLib;$(SolutionDir)ConsoleLib;$(SolutionDir)Presenter;$(SolutionDir)ViewModel;$(SolutionDir)UiEvent</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Flow;$(SolutionDir)FileManagement;$(SolutionDir)SocketLib;$(SolutionDir)ConsoleLib;$(SolutionDir)Presenter;$(SolutionDir)ViewModel;$(SolutionDir)UiEvent;$(SolutionDir)StringUtility</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -152,6 +152,9 @@
     </ProjectReference>
     <ProjectReference Include="..\SocketLib\SocketLib.vcxproj">
       <Project>{be438049-0aac-4aae-829f-3c3acc1f90b5}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\StringUtility\StringUtility.vcxproj">
+      <Project>{9485944e-1322-4e42-a865-9da1bc327be6}</Project>
     </ProjectReference>
     <ProjectReference Include="..\UiEvent\UiEvent.vcxproj">
       <Project>{22317410-fafc-41bc-8573-3fd22fe2b8e1}</Project>

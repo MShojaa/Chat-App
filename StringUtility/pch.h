@@ -4,13 +4,13 @@
 // However, files listed here are ALL re-compiled if any one of them is updated between builds.
 // Do not add files here that you will be updating frequently as this negates the performance advantage.
 
-#ifndef PCH_H_STRING_H
-#define PCH_H_STRING_H
-
-// add headers that you want to pre-compile here
-#include "framework.h"
+#ifndef PCH_H_MSH_STRING_H
+#define PCH_H_MSH_STRING_H
 
 #include <string>
 #include <vector>
 
-#endif //PCH_H_STRING_H
+// add headers that you want to pre-compile here
+#include "framework.h"
+
+#endif //PCH_H_MSH_STRING_H
