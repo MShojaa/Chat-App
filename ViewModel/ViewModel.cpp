@@ -5,14 +5,8 @@
 
 namespace msh {
 
-#define SERVER_APP
-
 	enum EventMode {
-#ifdef SERVER_APP
 		kSendMessage, kReceiveMessage, kSendFile, kReceiveFile
-#else
-		kReceiveMessage, kSendMessage, kReceiveFile, kSendFile
-#endif // SERVER_APP
 	};
 
 	bool ViewModel::OnEvent(mshEvent::UiEvent *event) {
@@ -168,9 +162,12 @@ namespace msh {
 		msh::Flow<std::string> buffer;
 
 		// Receives data from network and writes them to the buffer asynchronously
-		std::thread receiving_thread([this, &buffer, &result, &filename_with_size] {
+		long long file_size = std::stoll(filename_with_size[1]);
+		if (file_size == -1)
+			return false;
+
+		std::thread receiving_thread([this, &buffer, &result, &file_size] {
 			// Calculates number of packets to complete the file transfer
-			long long file_size = std::stoll(filename_with_size[1]);
 			long long number_of_packets = (file_size % 1024 == 0) ? (file_size / 1024) : (file_size / 1024 + 1);
 
 			result = socket_[EventMode::kReceiveFile].ReceiveAsyncUntil(buffer, number_of_packets);
@@ -185,7 +182,8 @@ namespace msh {
 		writing_thread.join();
 		file_.Close();
 
-
+		if (file_size != file_.GetSize(file_name))
+			return false;
 
 		return result;
 	}

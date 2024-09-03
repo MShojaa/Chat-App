@@ -153,9 +153,9 @@ namespace msh {
 			return -1;
 
 		LARGE_INTEGER file_size;
-		if (GetFileSizeEx(hFile_, &file_size))
+		if (GetFileSizeEx(hFile_, &file_size)) {
 			return file_size.QuadPart;
-		else {
+		} else {
 			std::cout << "file size error: " << GetLastError() << std::endl;
 			return -1;
 		}
