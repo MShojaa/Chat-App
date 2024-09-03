@@ -150,15 +150,27 @@ namespace msh {
 
 	long long FileManagement::GetSize() {
 		if (hFile_ == INVALID_HANDLE_VALUE)
-			return 0;
+			return -1;
 
 		LARGE_INTEGER file_size;
 		if (GetFileSizeEx(hFile_, &file_size))
 			return file_size.QuadPart;
 		else {
 			std::cout << "file size error: " << GetLastError() << std::endl;
-			return 0;
+			return -1;
 		}
+	}
+
+	long long FileManagement::GetSize(const std::string& file_name) {
+		this->Open(file_name, msh::FileMode::kRead);
+		if (!this->IsOpen())
+			return -1;
+
+		long long size = this->GetSize();
+
+		this->Close();
+
+		return size;
 	}
 
 	FileManagement::~FileManagement() {

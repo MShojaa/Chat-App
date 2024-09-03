@@ -70,6 +70,8 @@ namespace msh {
 
 		long long GetSize();
 
+		long long GetSize(const std::string &file_name);
+
 		/// <summary>
 		/// Closes the opened file
 		/// Calls Close() method

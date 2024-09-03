@@ -141,16 +141,24 @@ namespace msh {
 		bool result = false;
 
 		// Receives the file name
-		auto file_name = socket_[EventMode::kReceiveFile].Receive();
-		if (!file_name.has_value())
+		auto file_name_with_size = socket_[EventMode::kReceiveFile].Receive();
+		if (!file_name_with_size.has_value())
 			return result;  // false
 
 		if (!socket_[EventMode::kReceiveFile].Send(last_packet_))
 			return result;  // false
 
-		//long long file_size = 
+		// Splits file name and its size
+		auto filename_with_size = msh::String::Split(file_name_with_size.value());
+		if (filename_with_size.size() != 2)
+			return result;
+
+		// Removes quotes from the file name
+		std::string file_name = msh::String::Trim(filename_with_size[0], '\"');
+		file_name = msh::String::Trim(file_name, '\'');
+
 		// Opens a file to write content in it
-		file_.Open(file_name.value(), msh::FileMode::kWrite);
+		file_.Open(file_name, msh::FileMode::kWrite);
 		if (!file_.IsOpen()) {
 			std::cout << "error: " << GetLastError() << std::endl;
 			return result;  // false
@@ -160,8 +168,12 @@ namespace msh {
 		msh::Flow<std::string> buffer;
 
 		// Receives data from network and writes them to the buffer asynchronously
-		std::thread receiving_thread([this, &buffer, &result] {
-			result = socket_[EventMode::kReceiveFile].ReceiveAsyncUntil(buffer, last_packet_);
+		std::thread receiving_thread([this, &buffer, &result, &filename_with_size] {
+			// Calculates number of packets to complete the file transfer
+			long long file_size = std::stoll(filename_with_size[1]);
+			long long number_of_packets = (file_size % 1024 == 0) ? (file_size / 1024) : (file_size / 1024 + 1);
+
+			result = socket_[EventMode::kReceiveFile].ReceiveAsyncUntil(buffer, number_of_packets);
 			});
 
 		// Writes data in a file and pops data out of buffer asynchronously
@@ -172,6 +184,8 @@ namespace msh {
 		receiving_thread.join();
 		writing_thread.join();
 		file_.Close();
+
+
 
 		return result;
 	}

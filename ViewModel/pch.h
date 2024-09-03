@@ -15,5 +15,6 @@
 #include "FileManagement.h"
 #include "SocketLib.h"
 #include "UiEvent.h"
+#include "StringUtility.h"
 
 #endif //PCH_H_VIEW_MODEL_H
