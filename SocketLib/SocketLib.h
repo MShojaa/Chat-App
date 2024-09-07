@@ -116,7 +116,7 @@ namespace msh {
         /// </summary>
         SOCKET client_socket_;
 
-#define DEBUG_MODE
+//#define DEBUG_MODE
 #ifdef DEBUG_MODE
         /*int packet_sent;
         int packet_received;*/
